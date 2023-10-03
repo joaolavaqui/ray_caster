@@ -27,7 +27,7 @@ int main(void) {
   0,0,0,0,0,0,0,0,1,2,3,4,4,4,4,4,
   0,0,0,0,0,0,0,0,1,2,3,4,4,4,4,4,
   0,0,0,0,0,0,0,0,1,2,3,4,4,4,4,4};
-  int startmap[]={
+  int map[]={
   2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
   1,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,
   1,0,0,1,0,0,2,0,1,0,0,1,2,2,2,2,
@@ -45,15 +45,13 @@ int main(void) {
   1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
   2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2};
   
-  int map[64];
-  for(int m=0 ; m<=64 ; m++){map[m]=startmap[m];}
-  
   //PLAYER
-  float pX, pY, pA; int pH;
+  float pX, pY, pA, Speed; int pH;
   pX=2.0;
   pY=2.0;
   pA=0.0;
   pH=0;
+  Speed=0.8;
 
   //RAY
   float rX=0, rY=0, rA=0;
@@ -96,25 +94,17 @@ int main(void) {
       printf("\n");
       for(int reX=0 ; reX<60 ; reX++)
       {
-        if(reY>20 && reX>25 && reX<35)
+        if(reY>ptr[reX] && reY<ptr[reX]+wh[reX] && wc[reX]==1)
         {
-          printf("T");
-        }
-        else if(reY>19 && reX>27 && reX<33)
-        {
-          printf("T");
-        }
-        else if(reY>ptr[reX] && reY<ptr[reX]+wh[reX] && wc[reX]==1)
-        {
-          printf("O");
+          printf("%c", 219);
         }
         else if(reY>ptr[reX] && reY<ptr[reX]+wh[reX] && wc[reX]==2)
         {
-          printf("P");
+          printf("%c", 178);
         }
         else if(reY>=ptr[reX]+wh[reX])
         {
-          printf(" ");
+          printf("%c", 176);
         }
         else 
         {
@@ -126,31 +116,31 @@ int main(void) {
     
     //move player
     input=getchar();
-    if(input=='a'){pA-=5;}
-    if(input=='d'){pA+=5;}
+    if(input=='a'){pA-=10;}
+    if(input=='d'){pA+=10;}
     if(pA>360){pA-=(360);}
     if(pA<0){pA+=360;}
     
     if(input=='w')
     {
-      pX+=cos(pA*Rad)*0.2;
-      pY+=sin(pA*Rad)*0.2;
+      pX+=cos(pA*Rad)* Speed;
+      pY+=sin(pA*Rad)* Speed;
 
       if(map[((int)pY*16)+(int)pX]!=0 || heightmap[((int)pY*16)+(int)pX>pH+1])
       {
-        pX-=cos(pA*Rad)*0.2;
-        pY-=sin(pA*Rad)*0.2;
+        pX-=cos(pA*Rad)* Speed;
+        pY-=sin(pA*Rad)* Speed;
       }
     }
     if(input=='s')
     {
-      pX-=cos(pA*Rad)*0.2;
-      pY-=sin(pA*Rad)*0.2;
+      pX-=cos(pA*Rad)* Speed;
+      pY-=sin(pA*Rad)* Speed;
 
       if(map[((int)pY*16)+(int)pX]!=0 || heightmap[((int)pY*16)+(int)pX>pH+1])
       {
-        pX+=cos(pA*Rad)*0.2;
-        pY+=sin(pA*Rad)*0.2;
+        pX+=cos(pA*Rad)* Speed;
+        pY+=sin(pA*Rad)* Speed;
       }
     }
 
