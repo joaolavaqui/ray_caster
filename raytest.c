@@ -1,12 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <conio.h>
+#include <windows.h>
 
 #define PI 3.14159265
 #define Rad PI/180
 
-int main(void) {
+//puts the screen cursor on top left
+void rst_screen_pointer()
+{
+	COORD coord;
+	coord.X = 0;
+	coord.Y = 0;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
 
+//get plyer input
+char inputt()
+{
+    char in = 0;
+
+    if(kbhit() == 1)
+    {
+        in = _getch();
+    }
+
+    return in;
+}
+
+//game
+int main(void) {
+  
   //MAP
   float wh[60], ptr[60], wc[60], wht=0;
 
@@ -27,6 +52,7 @@ int main(void) {
   0,0,0,0,0,0,0,0,1,2,3,4,4,4,4,4,
   0,0,0,0,0,0,0,0,1,2,3,4,4,4,4,4,
   0,0,0,0,0,0,0,0,1,2,3,4,4,4,4,4};
+
   int map[]={
   2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
   1,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,
@@ -46,7 +72,7 @@ int main(void) {
   2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2};
   
   //PLAYER
-  float pX, pY, pA, Speed; int pH;
+  float pX, pY, pA, Speed, Lu; int pH;
   pX=2.0;
   pY=2.0;
   pA=0.0;
@@ -88,21 +114,21 @@ int main(void) {
     }
 
     //render
-    system("cls");
+    rst_screen_pointer();
     for(int reY=-10 ; reY<26 ; reY++)
     {
       printf("\n");
       for(int reX=0 ; reX<60 ; reX++)
       {
-        if(reY>ptr[reX] && reY<ptr[reX]+wh[reX] && wc[reX]==1)
+        if(reY+Lu>ptr[reX] && reY+Lu<ptr[reX]+wh[reX] && wc[reX]==1)
         {
           printf("%c", 219);
         }
-        else if(reY>ptr[reX] && reY<ptr[reX]+wh[reX] && wc[reX]==2)
+        else if(reY+Lu>ptr[reX] && reY+Lu<ptr[reX]+wh[reX] && wc[reX]==2)
         {
           printf("%c", 178);
         }
-        else if(reY>=ptr[reX]+wh[reX])
+        else if(reY+Lu>=ptr[reX]+wh[reX])
         {
           printf("%c", 176);
         }
@@ -113,9 +139,10 @@ int main(void) {
       }
     }
     printf("\n\n");
+    printf("CONTROLS:\nWS - move\nAD - turn\nQE - look down/up");
     
     //move player
-    input=getchar();
+    input=inputt();
     if(input=='a'){pA-=10;}
     if(input=='d'){pA+=10;}
     if(pA>360){pA-=(360);}
@@ -123,26 +150,42 @@ int main(void) {
     
     if(input=='w')
     {
-      pX+=cos(pA*Rad)* Speed;
-      pY+=sin(pA*Rad)* Speed;
-
+      pX+=cos(pA*Rad)*Speed;
       if(map[((int)pY*16)+(int)pX]!=0 || heightmap[((int)pY*16)+(int)pX>pH+1])
       {
-        pX-=cos(pA*Rad)* Speed;
-        pY-=sin(pA*Rad)* Speed;
+        pX-=cos(pA*Rad)*Speed;
+      }
+      
+      pY+=sin(pA*Rad)*Speed;
+      if(map[((int)pY*16)+(int)pX]!=0 || heightmap[((int)pY*16)+(int)pX>pH+1])
+      {
+        pY-=sin(pA*Rad)*Speed;
       }
     }
     if(input=='s')
     {
-      pX-=cos(pA*Rad)* Speed;
-      pY-=sin(pA*Rad)* Speed;
-
+      pX-=cos(pA*Rad)*Speed;
       if(map[((int)pY*16)+(int)pX]!=0 || heightmap[((int)pY*16)+(int)pX>pH+1])
       {
-        pX+=cos(pA*Rad)* Speed;
-        pY+=sin(pA*Rad)* Speed;
+        pX+=cos(pA*Rad)*Speed;
+      }
+      
+      pY-=sin(pA*Rad)*Speed;
+      if(map[((int)pY*16)+(int)pX]!=0 || heightmap[((int)pY*16)+(int)pX>pH+1])
+      {
+        pY+=sin(pA*Rad)*Speed;
       }
     }
+    if(input=='q')
+    {
+      Lu += 2;
+    }
+    if(input=='e')
+    {
+      Lu -= 2;
+    }
+    if(Lu>20){Lu=20;}
+    if(Lu<-20){Lu=-20;}
 
     pH=heightmap[((int)pY*16)+(int)pX];
 
